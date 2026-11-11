@@ -1,0 +1,31 @@
+==============================================================================
+FINAL FANTASY VIII RECOMPILED — GUÍA DE INICIO RÁPIDO (WINDOWS x64)
+Port Nativo para PC mediante Recompilación Estática MIPS R3000A (LLVM/Clang)
+==============================================================================
+
+Requisitos:
+- Copia legal de Final Fantasy VIII (Versión España / PAL: SLES-02084 o compatible).
+  Formatos soportados: .bin/.cue, .iso, .chd o .img.
+
+Pasos para jugar:
+1. Copia tus 4 imágenes de disco de Final Fantasy VIII en la carpeta 'disc/'
+   (o en la raíz del juego).
+2. Ejecuta 'Final_Fantasy_VIII_Launcher.exe' (o CONFIGURAR_FINAL_FANTASY_VIII.bat).
+3. Selecciona tus preferencias gráficas (4K, 60 FPS, Pantalla Panorámica 16:9 / 21:9 Ultrawide,
+   PGXP Subpixel sin temblor, Interpolación Gaussiana SPU 48kHz).
+4. ¡Haz clic en 'INICIAR JUEGO (4K 60FPS)' y disfruta de Squall, Rinoa y la aventura con la máxima fluidez nativa!
+
+Controles por defecto:
+- Teclado:
+  * Movimiento: Flechas de dirección
+  * Cruz (Aceptar): X
+  * Círculo (Cancelar): C
+  * Cuadrado (Menú / Cartas): V
+  * Triángulo: Z
+  * L1 / R1: Q / E
+  * L2 / R2: 1 / 3
+  * Start: Enter
+  * Select: Espacio
+- Mandos:
+  * Detección automática DirectInput / XInput (Mandos de PS4, PS5, Xbox One/Series, Switch Pro y genéricos USB).
+==============================================================================

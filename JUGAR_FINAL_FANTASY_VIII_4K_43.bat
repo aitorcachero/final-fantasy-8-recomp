@@ -1,0 +1,39 @@
+@echo off
+cd /d "%~dp0"
+title Final Fantasy VIII Recompiled - 4K 4:3 Original Aspect
+
+:: Optimizaciones de rendimiento nativo en relacion de aspecto 4:3 clasica
+set PSX_RENDER_THREAD=1
+set PSX_PRESENT_THREAD=1
+set PSX_FRAME_GEN=0
+set PSX_FRAME_INTERPOLATION=0
+set PSX_VSYNC=0
+set PSX_FPS_TELEMETRY=0
+set PSX_FREEZE_HEARTBEAT=0
+set PSX_WS_FORCE_FULLSCREEN=0
+set PSX_WS_FORCE_3D=0
+set PSX_WS_FORCE_2D=1
+set PSX_ASPECT_RATIO=4:3
+set PSX_INTERNAL_SCALE=8
+
+if exist "FinalFantasy8.exe" (
+    start "" "FinalFantasy8.exe" %*
+    exit /b
+)
+if exist "build-release\FinalFantasy8.exe" (
+    start "" "build-release\FinalFantasy8.exe" %*
+    exit /b
+)
+if exist "build-release\Final_Fantasy_VIII_Recompiled.exe" (
+    cd /d "%~dp0build-release"
+    start "" "Final_Fantasy_VIII_Recompiled.exe" %*
+    exit /b
+)
+if exist "Final_Fantasy_VIII_Recompiled.exe" (
+    start "" "Final_Fantasy_VIII_Recompiled.exe" %*
+    exit /b
+)
+
+echo [ERROR] No se encontro el ejecutable de Final Fantasy VIII Recompiled.
+pause
+exit /b

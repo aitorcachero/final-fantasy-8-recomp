@@ -1,0 +1,48 @@
+# Build outputs
+/build/
+/build-*/
+/out/
+/dist/
+/.happypath/
+/.cache/
+__pycache__/
+*.pyc
+
+# Release packaging & large binaries
+/release-stage/
+*.zip
+Final_Fantasy_VIII_Launcher.exe
+
+# Local PlayStation assets (never commit copyrighted dumps / BIOS / saves)
+/bios/
+/disc/
+/saves/
+*.bin
+*.cue
+*.iso
+*.img
+*.sub
+*.ccd
+*.mcd
+*.mcr
+*.chd
+*.car
+SCPH*.BIN
+
+# Local configs and run logs
+bios.cfg
+disc.cfg
+rom.cfg
+settings.toml
+launcher-window.ini
+*.log
+*.txt
+!CMakeLists.txt
+!LEEME_INSTRUCCIONES.txt
+!seeds/*.txt
+psx_last_run_report.json
+run_stdout.log
+run_stderr.log
+overlay_captures.json
+overlay_captures.json.d/
+psx_freeze_heartbeat.json
