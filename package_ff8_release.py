@@ -46,6 +46,7 @@ def create_release():
     # 3. Copiar scripts por lotes
     bat_files = [
         "JUGAR_FINAL_FANTASY_VIII.bat",
+        "JUGAR_FINAL_FANTASY_VIII_16_9_PANTALLA_COMPLETA.bat",
         "JUGAR_FINAL_FANTASY_VIII_4K_43.bat",
         "JUGAR_FINAL_FANTASY_VIII_21_9_ULTRAWIDE.bat",
         "CONFIGURAR_FINAL_FANTASY_VIII.bat",

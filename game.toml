@@ -80,7 +80,7 @@ frame_interpolation_fps = 0
 offer_frame_interpolation = false
 frame_generation = false
 frame_generation_method = "redraw"
-aspect_ratio = "4:3"
+aspect_ratio = "16:9"
 
 [widescreen]
 offer = true
