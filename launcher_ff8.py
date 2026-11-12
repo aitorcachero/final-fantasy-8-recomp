@@ -131,6 +131,41 @@ def parse_toml(path: Path) -> dict:
         pass
     return data
 
+def save_mod_state(work_dir: Path, hd_textures_enabled: bool, dump_enabled: bool):
+    for base in [work_dir, BASE_DIR]:
+        try:
+            mods_dir = base / "mods"
+            mods_dir.mkdir(parents=True, exist_ok=True)
+            tex_pack_dir = mods_dir / "texture-packs" / "SLES-02084"
+            (tex_pack_dir / "replacements").mkdir(parents=True, exist_ok=True)
+            (tex_pack_dir / "dumps").mkdir(parents=True, exist_ok=True)
+
+            state_file = mods_dir / "state.toml"
+            if hd_textures_enabled or dump_enabled:
+                content = f"""format_version = 2
+
+[[package]]
+id = "psx.enhancement.hd-textures"
+version = "1.0.0"
+
+[[feature]]
+package_id = "psx.enhancement.hd-textures"
+id = "hd-textures"
+enabled = true
+
+[feature.values]
+replacements = "{"true" if hd_textures_enabled else "false"}"
+dump = "{"true" if dump_enabled else "false"}"
+
+[feature.resources]
+pack = "mods/texture-packs/SLES-02084"
+"""
+            else:
+                content = "format_version = 2\n"
+            state_file.write_text(content, encoding="utf-8")
+        except Exception as e:
+            print(f"Error escribiendo mods/state.toml: {e}")
+
 def save_game_settings(settings: dict):
     exe, work_dir = find_game_environment()
     work_dir.mkdir(parents=True, exist_ok=True)
@@ -201,6 +236,7 @@ max_gil = {str(settings.get('max_gil', False)).lower()}
         if BASE_DIR != work_dir:
             with open(BASE_DIR / "settings.toml", "w", encoding="utf-8") as f:
                 f.write(content)
+        save_mod_state(work_dir, settings.get("hd_textures", True), settings.get("dump_textures", False))
     except Exception as e:
         print(f"Error escribiendo settings.toml: {e}")
 
@@ -247,6 +283,22 @@ class FF8ModernLauncher(ctk.CTk):
         self.var_no_encounters = tk.BooleanVar(value=enh.get("no_encounters", "false") == "true")
         self.var_ap_boost = tk.StringVar(value="Normal (1x)")
         self.var_max_gil = tk.BooleanVar(value=enh.get("max_gil", "false") == "true")
+
+        # Texturas HD (mods/state.toml)
+        hd_tex_enabled = True
+        dump_tex_enabled = False
+        state_file = work_dir / "mods" / "state.toml"
+        if not state_file.exists() and (BASE_DIR / "mods" / "state.toml").exists():
+            state_file = BASE_DIR / "mods" / "state.toml"
+        if state_file.exists():
+            try:
+                txt = state_file.read_text(encoding="utf-8")
+                hd_tex_enabled = "psx.enhancement.hd-textures" in txt and 'replacements = "true"' in txt
+                dump_tex_enabled = 'dump = "true"' in txt
+            except Exception:
+                pass
+        self.var_hd_textures = tk.BooleanVar(value=hd_tex_enabled)
+        self.var_dump_textures = tk.BooleanVar(value=dump_tex_enabled)
 
         # Mandos
         ctrl = prev.get("controller", {})
@@ -422,6 +474,7 @@ class FF8ModernLauncher(ctk.CTk):
         info_lines = (
             "✓ Recompilación estática nativa C / LLVM Clang 22 (64 bits).\n"
             "✓ Corrección geométrica PGXP activa: cero temblor de polígonos en Squall, escenarios y combates.\n"
+            "✓ Soporte de Texturas y Fondos HD activo (mods/texture-packs/SLES-02084).\n"
             "✓ Sin pantallas intermedias: al hacer clic en Iniciar Juego entrará directamente a Final Fantasy VIII."
         )
         ctk.CTkLabel(status_box, text=info_lines, font=ctk.CTkFont(size=12), text_color="#cbd5e1", justify="left").pack(anchor="w", padx=14, pady=(0, 10))
@@ -466,6 +519,25 @@ class FF8ModernLauncher(ctk.CTk):
         ff_box.pack(fill="x", padx=16, pady=(0, 12))
         ctk.CTkLabel(ff_box, text="⚡ Multiplicador Acelerador Fast-Forward (Tecla Tab / Gatillo R2):", font=ctk.CTkFont(size=12)).pack(side="left", padx=(0, 10))
         ctk.CTkOptionMenu(ff_box, variable=self.var_ff_speed, values=["2x", "3x", "4x", "8x"], width=85, fg_color="#1e2d4a", button_color=C_ORANGE).pack(side="left")
+
+        # ── Card de Texturas y Fondos HD ──
+        card_hd = ctk.CTkFrame(scroll, fg_color="#151f33", corner_radius=8, border_width=1, border_color=C_BORDER)
+        card_hd.pack(fill="x", pady=6, padx=6)
+        ctk.CTkLabel(card_hd, text="PAQUETES DE TEXTURAS Y FONDOS HD (FORMATO DUCKSTATION / NEXUS)", font=ctk.CTkFont(size=11, weight="bold"), text_color=C_ORANGE).pack(anchor="w", padx=16, pady=(12, 6))
+
+        ctk.CTkCheckBox(card_hd, text="Habilitar Inyección de Texturas y Fondos HD (OpenGL)", variable=self.var_hd_textures, font=ctk.CTkFont(size=13), checkmark_color=C_ORANGE).pack(anchor="w", padx=16, pady=5)
+        ctk.CTkCheckBox(card_hd, text="Volcar Texturas Originales en Tiempo Real (Texture Dumper / Modo Creador)", variable=self.var_dump_textures, font=ctk.CTkFont(size=13), checkmark_color=C_ORANGE).pack(anchor="w", padx=16, pady=5)
+
+        hd_desc = (
+            "Permite sustituir al vuelo las texturas de PS1 por imágenes en 4K/UHD (.png, .jpg, .webp).\n"
+            "Compatible con packs de DuckStation y texturas reescaladas con IA (Nexus Mods)."
+        )
+        ctk.CTkLabel(card_hd, text=hd_desc, font=ctk.CTkFont(size=11), text_color=C_TEXT_MUTED, justify="left").pack(anchor="w", padx=16, pady=(2, 6))
+
+        btn_box = ctk.CTkFrame(card_hd, fg_color="transparent")
+        btn_box.pack(fill="x", padx=16, pady=(4, 12))
+        ctk.CTkButton(btn_box, text="📁 Abrir Carpeta de Texturas HD (replacements)", font=ctk.CTkFont(size=12, weight="bold"), fg_color="#1f2d47", hover_color="#2b3e61", border_width=1, border_color=C_BORDER, command=self.open_textures_folder).pack(side="left", padx=(0, 8))
+        ctk.CTkButton(btn_box, text="📁 Abrir Carpeta de Volcados (dumps)", font=ctk.CTkFont(size=12), fg_color="#1f2d47", hover_color="#2b3e61", border_width=1, border_color=C_BORDER, command=self.open_dumps_folder).pack(side="left")
 
         card2 = ctk.CTkFrame(scroll, fg_color="#151f33", corner_radius=8, border_width=1, border_color=C_BORDER)
         card2.pack(fill="x", pady=6, padx=6)
@@ -596,6 +668,22 @@ class FF8ModernLauncher(ctk.CTk):
         d.mkdir(parents=True, exist_ok=True)
         os.startfile(str(d))
 
+    def open_textures_folder(self):
+        exe, work_dir = find_game_environment()
+        t = work_dir / "mods" / "texture-packs" / "SLES-02084" / "replacements"
+        if not t.exists() and (BASE_DIR / "mods" / "texture-packs" / "SLES-02084" / "replacements").exists():
+            t = (BASE_DIR / "mods" / "texture-packs" / "SLES-02084" / "replacements").resolve()
+        t.mkdir(parents=True, exist_ok=True)
+        os.startfile(str(t))
+
+    def open_dumps_folder(self):
+        exe, work_dir = find_game_environment()
+        d = work_dir / "mods" / "texture-packs" / "SLES-02084" / "dumps"
+        if not d.exists() and (BASE_DIR / "mods" / "texture-packs" / "SLES-02084" / "dumps").exists():
+            d = (BASE_DIR / "mods" / "texture-packs" / "SLES-02084" / "dumps").resolve()
+        d.mkdir(parents=True, exist_ok=True)
+        os.startfile(str(d))
+
     def play_game_direct(self):
         """Guarda la configuración y arranca el juego DIRECTO sin segunda ventana"""
         exe, work_dir = find_game_environment()
@@ -630,14 +718,16 @@ class FF8ModernLauncher(ctk.CTk):
             "no_encounters": self.var_no_encounters.get(),
             "ap_boost": 1 if "Normal" in self.var_ap_boost.get() else int(self.var_ap_boost.get().replace("x", "")),
             "max_gil": self.var_max_gil.get(),
+            "hd_textures": self.var_hd_textures.get(),
+            "dump_textures": self.var_dump_textures.get(),
         }
         save_game_settings(settings)
 
         # Variables de entorno para omitir Dear ImGui y arrancar juego directamente
         env = os.environ.copy()
         env["PSX_NO_LAUNCHER"] = "1"
-        env["PSX_RENDER_THREAD"] = "1"
-        env["PSX_PRESENT_THREAD"] = "1"
+        env["PSX_RENDER_THREAD"] = "0"
+        env["PSX_PRESENT_THREAD"] = "0"
         env["PSX_FRAME_GEN"] = "0"
         env["PSX_FRAME_INTERPOLATION"] = "0"
         env["PSX_VSYNC"] = "0" if "Desactivado" in self.var_vsync.get() else "1"

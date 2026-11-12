@@ -61,6 +61,28 @@ def create_release():
         shutil.copy2(FF8_DIR / "tools" / "chdman.exe", REL_FOLDER / "tools" / "chdman.exe")
     if (FF8_DIR / "tools" / "setup_disc.py").exists():
         shutil.copy2(FF8_DIR / "tools" / "setup_disc.py", REL_FOLDER / "tools" / "setup_disc.py")
+    if (FF8_DIR / "tools" / "import_ff8_nexus_pack.py").exists():
+        shutil.copy2(FF8_DIR / "tools" / "import_ff8_nexus_pack.py", REL_FOLDER / "tools" / "import_ff8_nexus_pack.py")
+
+    # 4.1 Copiar Mods y estructura de Texturas HD
+    mods_src = FF8_DIR / "build-release" / "mods"
+    if not mods_src.exists():
+        mods_src = FF8_DIR / "mods"
+    if mods_src.exists():
+        rel_mods = REL_FOLDER / "mods"
+        if (mods_src / "bundled").exists():
+            shutil.copytree(mods_src / "bundled", rel_mods / "bundled", dirs_exist_ok=True)
+        if (mods_src / "texture-packs").exists():
+            shutil.copytree(mods_src / "texture-packs", rel_mods / "texture-packs", dirs_exist_ok=True)
+        if (mods_src / "state.toml").exists():
+            shutil.copy2(mods_src / "state.toml", rel_mods / "state.toml")
+
+    # Asegurar carpetas de texturas HD y config.yaml
+    tex_dir = REL_FOLDER / "mods" / "texture-packs" / "SLES-02084"
+    (tex_dir / "replacements").mkdir(parents=True, exist_ok=True)
+    (tex_dir / "dumps").mkdir(parents=True, exist_ok=True)
+    if (FF8_DIR / "mods" / "texture-packs" / "SLES-02084" / "config.yaml").exists():
+        shutil.copy2(FF8_DIR / "mods" / "texture-packs" / "SLES-02084" / "config.yaml", tex_dir / "config.yaml")
 
     # 5. Disc README
     disc_readme = (
