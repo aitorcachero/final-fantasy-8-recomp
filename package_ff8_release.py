@@ -87,6 +87,12 @@ def create_release():
     if (FF8_DIR / "mods" / "texture-packs" / "SLES-02084" / "config.yaml").exists():
         shutil.copy2(FF8_DIR / "mods" / "texture-packs" / "SLES-02084" / "config.yaml", tex_dir / "config.yaml")
 
+    # 4.2 Copiar shaders nativos de remasterizacion
+    shaders_src = FF8_DIR / "shaders"
+    if shaders_src.exists():
+        rel_shaders = REL_FOLDER / "shaders"
+        shutil.copytree(shaders_src, rel_shaders, dirs_exist_ok=True)
+
     # 5. Disc README
     disc_readme = (
         "Coloca aqui tus imagenes originales de Final Fantasy VIII (Discos 1 al 4) en formato .CHD o .BIN/.CUE.\n"

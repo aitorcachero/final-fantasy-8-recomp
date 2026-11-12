@@ -169,6 +169,10 @@ pack = "mods/texture-packs/SLES-02084"
 def save_game_settings(settings: dict):
     exe, work_dir = find_game_environment()
     work_dir.mkdir(parents=True, exist_ok=True)
+    post_shader_val = "shaders/remaster_cinematic.pfx" if settings.get("remaster_shader", True) else ""
+    bloom_val = "0.40" if settings.get("hdr_bloom", True) else "0.0"
+    aa_val = "fxaa_hq" if settings.get("fxaa_hq", True) else "off"
+
     content = f"""# psxrecomp user settings - written by Sega Rally Revo / Terranigma style launcher.
 [video]
 renderer          = "opengl"
@@ -183,6 +187,15 @@ vsync             = "{settings.get('vsync', 'off')}"
 frame_interpolation = false
 frame_interpolation_fps = 0
 aspect_ratio      = "{settings.get('aspect_ratio', '16:9')}"
+supersample       = 2.0
+antialiasing_mode = "{aa_val}"
+bloom             = {bloom_val}
+post_shader       = "{post_shader_val}"
+texture_filtering = "bilinear"
+fmv_filter        = "bicubic"
+fmv_chroma_smoothing = true
+geometry_correction = {str(settings.get('pgxp_geometry', True)).lower()}
+perspective_texturing = {str(settings.get('pgxp_perspective', True)).lower()}
 
 [hotkeys]
 rewind_pad = 1272
@@ -267,6 +280,12 @@ class FF8ModernLauncher(ctk.CTk):
         self.var_fullscreen = tk.BooleanVar(value=prev.get("video", {}).get("fullscreen", "0") == "1")
         self.var_vsync = tk.StringVar(value="Desactivado (Baja latencia)")
         self.var_tex_filter = tk.StringVar(value="Bilineal + Anisotrópico 16x")
+
+        # Pipeline Remaster Nativo
+        vid = prev.get("video", {})
+        self.var_remaster_shader = tk.BooleanVar(value=vid.get("post_shader", "shaders/remaster_cinematic.pfx") != "")
+        self.var_hdr_bloom = tk.BooleanVar(value=float(vid.get("bloom", "0.40")) > 0.05)
+        self.var_fxaa_hq = tk.BooleanVar(value=vid.get("antialiasing_mode", "fxaa_hq") != "off")
 
         # Mejoras
         enh = prev.get("enhancements", {})
@@ -554,12 +573,15 @@ class FF8ModernLauncher(ctk.CTk):
 
     # ── TAB 3: GRÁFICOS ──
     def setup_tab_graphics(self, tab):
-        card = ctk.CTkFrame(tab, fg_color="#151f33", corner_radius=8, border_width=1, border_color=C_BORDER)
-        card.pack(fill="both", expand=True, padx=14, pady=14)
+        scroll = ctk.CTkScrollableFrame(tab, fg_color="transparent")
+        scroll.pack(fill="both", expand=True, padx=10, pady=5)
 
-        ctk.CTkLabel(card, text="PANTALLA Y RENDERIZADOR:", font=ctk.CTkFont(size=11, weight="bold"), text_color=C_ORANGE).pack(anchor="w", padx=16, pady=(14, 10))
+        card1 = ctk.CTkFrame(scroll, fg_color="#151f33", corner_radius=8, border_width=1, border_color=C_BORDER)
+        card1.pack(fill="x", pady=6, padx=6)
 
-        grid = ctk.CTkFrame(card, fg_color="transparent")
+        ctk.CTkLabel(card1, text="PANTALLA Y RENDERIZADOR:", font=ctk.CTkFont(size=11, weight="bold"), text_color=C_ORANGE).pack(anchor="w", padx=16, pady=(14, 10))
+
+        grid = ctk.CTkFrame(card1, fg_color="transparent")
         grid.pack(fill="x", padx=16, pady=4)
 
         ctk.CTkLabel(grid, text="Resolución Interna:", font=ctk.CTkFont(size=13, weight="bold")).grid(row=0, column=0, sticky="w", pady=8)
@@ -584,7 +606,16 @@ class FF8ModernLauncher(ctk.CTk):
             "Activado (Sin cortes)"
         ], width=290, fg_color="#1e2d4a", button_color=C_ORANGE).grid(row=2, column=1, padx=20, pady=8)
 
-        ctk.CTkCheckBox(card, text="Pantalla Completa Exclusiva", variable=self.var_fullscreen, font=ctk.CTkFont(size=13), checkmark_color=C_ORANGE).pack(anchor="w", padx=16, pady=(15, 6))
+        ctk.CTkCheckBox(card1, text="Pantalla Completa Exclusiva", variable=self.var_fullscreen, font=ctk.CTkFont(size=13), checkmark_color=C_ORANGE).pack(anchor="w", padx=16, pady=(12, 14))
+
+        card2 = ctk.CTkFrame(scroll, fg_color="#151f33", corner_radius=8, border_width=1, border_color=C_BORDER)
+        card2.pack(fill="x", pady=6, padx=6)
+
+        ctk.CTkLabel(card2, text="TECNOLOGÍAS DE REMASTERIZACIÓN NATIVAS (POST-FX):", font=ctk.CTkFont(size=11, weight="bold"), text_color=C_CYAN).pack(anchor="w", padx=16, pady=(12, 6))
+
+        ctk.CTkCheckBox(card2, text="Filtro Remaster Cinemático (CAS Sharpening + Filmic Tonemapping + Vibrance)", variable=self.var_remaster_shader, font=ctk.CTkFont(size=13), checkmark_color=C_ORANGE).pack(anchor="w", padx=16, pady=5)
+        ctk.CTkCheckBox(card2, text="Resplandor Cinemático HDR (Bloom en magias, GFs y chispas sin tocar HUD)", variable=self.var_hdr_bloom, font=ctk.CTkFont(size=13), checkmark_color=C_ORANGE).pack(anchor="w", padx=16, pady=5)
+        ctk.CTkCheckBox(card2, text="Anti-Aliasing High Quality FXAA (Suavizado de bordes 3D sin perder nitidez)", variable=self.var_fxaa_hq, font=ctk.CTkFont(size=13), checkmark_color=C_ORANGE).pack(anchor="w", padx=16, pady=(5, 12))
 
     # ── TAB 4: CONTROLES ──
     def setup_tab_controls(self, tab):
@@ -720,6 +751,9 @@ class FF8ModernLauncher(ctk.CTk):
             "max_gil": self.var_max_gil.get(),
             "hd_textures": self.var_hd_textures.get(),
             "dump_textures": self.var_dump_textures.get(),
+            "remaster_shader": self.var_remaster_shader.get(),
+            "hdr_bloom": self.var_hdr_bloom.get(),
+            "fxaa_hq": self.var_fxaa_hq.get(),
         }
         save_game_settings(settings)
 
@@ -733,6 +767,23 @@ class FF8ModernLauncher(ctk.CTk):
         env["PSX_VSYNC"] = "0" if "Desactivado" in self.var_vsync.get() else "1"
         env["PSX_FPS_TELEMETRY"] = "0"
         env["PSX_FREEZE_HEARTBEAT"] = "0"
+
+        if self.var_remaster_shader.get():
+            env["PSX_POST_SHADER"] = "shaders/remaster_cinematic.pfx"
+        else:
+            env["PSX_POST_SHADER"] = ""
+
+        if self.var_hdr_bloom.get():
+            env["PSX_BLOOM"] = "0.40"
+        else:
+            env["PSX_BLOOM"] = "0.0"
+
+        if self.var_fxaa_hq.get():
+            env["PSX_AA_MODE"] = "fxaa_hq"
+        else:
+            env["PSX_AA_MODE"] = "off"
+
+        env["PSX_SUPERSAMPLE"] = "2.0"
 
         if "21:9" in self.var_aspect.get():
             env["PSX_ASPECT_RATIO"] = "21:9"

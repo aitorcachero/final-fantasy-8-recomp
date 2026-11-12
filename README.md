@@ -35,6 +35,11 @@ El resultado es una aplicación nativa de 64 bits con latencia prácticamente nu
 * 🎼 **Audio SPU HQ:** Motor de sonido PlayStation de 24 canales con interpolación Gaussiana de alta fidelidad, remuestreo a 48 kHz y búfer de latencia ultrabaja.
 * 💿 **Soporte Completo de 4 CDs:** Gestión integrada de los 4 discos del juego. Selección y cambio de disco dinámico desde el lanzador y en caliente.
 * 🕹️ **Control Analógico DualShock:** Compatibilidad total para sticks analógicos, vibración y detección directa de mandos modernos (Xbox, PlayStation DualSense/DualShock, DirectInput/XInput).
+* 🌟 **Pipeline de Remasterización Nativo (Post-Processing GLSL):**
+  * **Contrast Adaptive Sharpening (CAS):** Enfoque adaptativo inteligente que resalta el detalle fino de los fondos prerrenderizados (Jardín de Balamb, Timber, Deling City) sin generar halos ni ruido.
+  * **Resplandor Cinemático HDR (Bloom Selectivo):** Resplandor lumínico de alta precisión en magias, invocaciones de Guardian Forces (GFs), chispas de Gunblade y efectos visuales con máscara stencil (las cajas de texto y el HUD permanecen 100% nítidos).
+  * **Anti-Aliasing High Quality FXAA:** Suavizado subpíxel de bordes poligonales sin pérdida de definición de textura.
+  * **Filmic Tonemapping & Vibrance:** Curva de contraste cinematográfica y realce de color perceptual que revitaliza la paleta visual original de 1999.
 * 🛡️ **Bypass Nativo de Protección LibCrypt:** Rutina de intercepción automática en RAM para evitar cualquier bloqueo o pantallazo negro por comprobación anti-copia de sectores.
 * 🖼️ **Inyección y Reemplazo de Texturas HD:** Compatibilidad nativa en el pipeline OpenGL con el estándar de DuckStation y Beetle PSX. Permite sustituir al vuelo texturas de PS1 por imágenes en 4K/UHD (`.png`, `.webp`, `.jpg`) con filtrado de transparencias y escalado bilineal.
 * 🎨 **Volcado de Texturas en Tiempo Real (Texture Dumper):** Modo creador integrado que extrae de forma limpia las texturas originales de la VRAM mientras juegas para poder editarlas o reescalarlas con IA (ESRGAN).
