@@ -36,7 +36,35 @@ El resultado es una aplicación nativa de 64 bits con latencia prácticamente nu
 * 💿 **Soporte Completo de 4 CDs:** Gestión integrada de los 4 discos del juego. Selección y cambio de disco dinámico desde el lanzador y en caliente.
 * 🕹️ **Control Analógico DualShock:** Compatibilidad total para sticks analógicos, vibración y detección directa de mandos modernos (Xbox, PlayStation DualSense/DualShock, DirectInput/XInput).
 * 🛡️ **Bypass Nativo de Protección LibCrypt:** Rutina de intercepción automática en RAM para evitar cualquier bloqueo o pantallazo negro por comprobación anti-copia de sectores.
-* 🚀 **Lanzador Único Moderno (Estilo Sega Rally Revo / Terranigma):** Interfaz oscura neumórfica para elegir disco, ajustar resoluciones, ver estado del mando e iniciar el juego en un solo clic.
+* 🖼️ **Inyección y Reemplazo de Texturas HD:** Compatibilidad nativa en el pipeline OpenGL con el estándar de DuckStation y Beetle PSX. Permite sustituir al vuelo texturas de PS1 por imágenes en 4K/UHD (`.png`, `.webp`, `.jpg`) con filtrado de transparencias y escalado bilineal.
+* 🎨 **Volcado de Texturas en Tiempo Real (Texture Dumper):** Modo creador integrado que extrae de forma limpia las texturas originales de la VRAM mientras juegas para poder editarlas o reescalarlas con IA (ESRGAN).
+* 🚀 **Lanzador Único Moderno (Estilo Sega Rally Revo / Terranigma):** Interfaz oscura neumórfica para elegir disco, ajustar resoluciones, gestionar texturas HD, ver estado del mando e iniciar el juego en un solo clic.
+
+---
+
+## 🖼️ Paquetes de Texturas HD y Modding Visual
+
+Este port nativo incluye un subsistema de texturas HD de alto rendimiento integrado directamente en el backend de renderizado OpenGL, **100% compatible con la nomenclatura y estructura de paquetes de DuckStation**:
+
+### ⚡ Instalación Automatizada en 1-Clic:
+Dispones del script `INSTALAR_PACK_TEXTURAS_HD.bat` en la raíz del juego:
+1. **Arrastra y suelta** cualquier archivo comprimido (`.zip`, `.rar`, `.7z`) o carpeta que contenga un pack de texturas sobre `INSTALAR_PACK_TEXTURAS_HD.bat`.
+2. El instalador extraerá las imágenes, las organizará en la ruta canónica de la versión española (`mods/texture-packs/SLES-02084/replacements/`) y activará automáticamente el mod en `mods/state.toml`.
+
+### 📂 Estructura de Directorios de Texturas:
+* `mods/texture-packs/SLES-02084/replacements/`: Carpeta donde se alojan las texturas HD de reemplazo (`texupload-*.png`, `texpage-*.png`, etc.).
+* `mods/texture-packs/SLES-02084/dumps/`: Carpeta donde el motor guarda las texturas extraídas de la VRAM al activar el modo *Texture Dumper*.
+* `mods/texture-packs/SLES-02084/config.yaml`: Parámetros de precisión y caché optimizados específicamente para *Final Fantasy VIII*:
+  * `MaxVRAMWriteSplits: 4` (tratamiento de escrituras parciales de VRAM).
+  * `ConvertCopiesToWrites: true` (manejo correcto de copias de VRAM en animaciones).
+  * `ReplacementScaleLinearFilter: true` (suavizado bilineal en texturas de alta resolución).
+
+### 🎛️ Control desde el Master Launcher:
+Dentro de la pestaña **MEJORAS (QoL)** del lanzador dispones de:
+* Casilla para **activar/desactivar el reemplazo de texturas HD** con un clic.
+* Casilla para **activar el volcado de texturas (Texture Dumper)** en tiempo real.
+* Botón **"📁 Abrir Carpeta de Texturas HD (replacements)"** para acceder al instante mediante el Explorador de Windows.
+* Botón **"📁 Abrir Carpeta de Volcados (dumps)"** para revisar las texturas capturadas.
 
 ---
 

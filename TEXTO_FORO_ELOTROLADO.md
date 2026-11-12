@@ -38,6 +38,9 @@ Al igual que en los proyectos que hemos compartido anteriormente, [b]NO SE TRATA
 [*] [b]Bypass Automático Anti-Copia LibCrypt PAL:[/b]
   La versión europea/española de Final Fantasy VIII incluye protección LibCrypt con verificación de sectores subcanal. Se ha implementado un bypass a nivel de instrucción que detecta los bucles de comprobación en RAM y salta limpiamente a la inicialización del juego, evitando cualquier bloqueo o pantallazo negro.
 
+[*] [b]Soporte Nativo de Texturas y Fondos HD (Interoperabilidad DuckStation & Beetle):[/b]
+  Integración directa en el pipeline OpenGL para reemplazar texturas clásicas de PS1 por imágenes en 4K/UHD ([i].png, .webp, .jpg[/i]). Cuenta además con [b]Texture Dumper[/b] en tiempo real para creadores de mods y un script [b]INSTALAR_PACK_TEXTURAS_HD.bat[/b] que permite arrastrar y soltar cualquier .zip/.rar de texturas para instalarlo automáticamente.
+
 [*] [b]Control Analógico DualShock Plug & Play:[/b]
   Soporte completo y precalibrado para mandos de Xbox (Series / One / 360), PlayStation (DualShock 4 / DualSense), Nintendo Switch Pro y gamepads USB DirectInput/XInput, con los sticks analógicos habilitados por defecto.
 [/list]
