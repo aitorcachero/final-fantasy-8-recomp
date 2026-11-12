@@ -3,16 +3,13 @@ cd /d "%~dp0"
 title Final Fantasy VIII Recompiled - 21:9 Ultrawide Edition
 
 :: Modo Ultrawide 21:9 para monitores panoramicos
-set PSX_RENDER_THREAD=1
-set PSX_PRESENT_THREAD=1
+set PSX_RENDER_THREAD=0
+set PSX_PRESENT_THREAD=0
 set PSX_FRAME_GEN=0
 set PSX_FRAME_INTERPOLATION=0
 set PSX_VSYNC=0
 set PSX_FPS_TELEMETRY=0
 set PSX_FREEZE_HEARTBEAT=0
-set PSX_WS_FORCE_FULLSCREEN=0
-set PSX_WS_FORCE_3D=1
-set PSX_WS_FORCE_2D=0
 set PSX_ASPECT_RATIO=21:9
 set PSX_INTERNAL_SCALE=8
 

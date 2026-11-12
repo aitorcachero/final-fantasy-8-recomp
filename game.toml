@@ -80,13 +80,13 @@ frame_interpolation_fps = 0
 offer_frame_interpolation = false
 frame_generation = false
 frame_generation_method = "redraw"
-aspect_ratio = "16:9"
+aspect_ratio = "4:3"
 
 [widescreen]
 offer = true
 offer_ultrawide = true
-gte_game_mode = true
-native_wide = true
+gte_game_mode = false
+native_wide = false
 
 [audio]
 buffer_ms = 180

@@ -186,7 +186,7 @@ frame_generation  = false
 vsync             = "{settings.get('vsync', 'off')}"
 frame_interpolation = false
 frame_interpolation_fps = 0
-aspect_ratio      = "{settings.get('aspect_ratio', '16:9')}"
+aspect_ratio      = "{settings.get('aspect_ratio', '4:3')}"
 supersample       = 2.0
 antialiasing_mode = "{aa_val}"
 bloom             = {bloom_val}
@@ -274,9 +274,17 @@ class FF8ModernLauncher(ctk.CTk):
         disc_prev = int(prev.get("disc", {}).get("selected", 1))
         self.var_disc = tk.IntVar(value=disc_prev)
 
-        self.var_preset = tk.StringVar(value="4K 60FPS Widescreen")
+        prev_aspect = prev.get("video", {}).get("aspect_ratio", "4:3")
+        if "16:9" in prev_aspect:
+            aspect_init = "16:9 Panorámico"
+        elif "21:9" in prev_aspect:
+            aspect_init = "21:9 Ultra-Panorámico"
+        else:
+            aspect_init = "4:3 Clásico Original (Sin glitches - Recomendado)"
+
+        self.var_preset = tk.StringVar(value="4K 60FPS Clásico")
         self.var_resolution = tk.StringVar(value="4K Ultra HD (3840x2160 - 8x SSAA)")
-        self.var_aspect = tk.StringVar(value="16:9 Panorámico")
+        self.var_aspect = tk.StringVar(value=aspect_init)
         self.var_fullscreen = tk.BooleanVar(value=prev.get("video", {}).get("fullscreen", "0") == "1")
         self.var_vsync = tk.StringVar(value="Desactivado (Baja latencia)")
         self.var_tex_filter = tk.StringVar(value="Bilineal + Anisotrópico 16x")
@@ -459,9 +467,10 @@ class FF8ModernLauncher(ctk.CTk):
         presets_frame.pack(fill="x", padx=14, pady=4)
 
         presets = [
-            ("🏎️ MODERNO 4K 60FPS", "Resolución 4K UHD 8x, 16:9 Panorámico, PGXP Subpixel y Cargas Rápidas."),
+            ("🌟 MASTER EDITION 4K 60FPS", "Resolución 4K UHD 8x, PGXP Subpixel, 4:3 Pillarbox nativo sin distorsión."),
+            ("🏎️ 16:9 PANORÁMICO", "Renderizado 16:9 para pantallas panorámicas."),
             ("🎮 ULTRAWIDE 21:9", "Campo de visión panorámico 21:9 adaptado a monitores ultra-anchos."),
-            ("📺 RETRO CRT 4:3", "Aspect ratio clásico 4:3 con nitidez pura y Scanlines analógicas."),
+            ("📺 RETRO CRT 4:3", "Aspect ratio clásico 4:3 en 1080p con nitidez pura."),
         ]
 
         for title, desc in presets:
@@ -499,13 +508,19 @@ class FF8ModernLauncher(ctk.CTk):
         ctk.CTkLabel(status_box, text=info_lines, font=ctk.CTkFont(size=12), text_color="#cbd5e1", justify="left").pack(anchor="w", padx=14, pady=(0, 10))
 
     def apply_preset(self, preset_name):
-        if "4K" in preset_name:
+        if "MASTER" in preset_name or "4K" in preset_name:
+            self.var_resolution.set("4K Ultra HD (3840x2160 - 8x SSAA)")
+            self.var_aspect.set("4:3 Clásico Original (Sin glitches - Recomendado)")
+            self.var_pgxp.set(True)
+            self.var_perspective.set(True)
+            self.var_turbo_loads.set(True)
+            messagebox.showinfo("Perfil Aplicado", "Se ha configurado el perfil 4K Master Edition (4:3 Pillarbox nativo sin distorsión).")
+        elif "16:9" in preset_name or "PANORÁMICO" in preset_name:
             self.var_resolution.set("4K Ultra HD (3840x2160 - 8x SSAA)")
             self.var_aspect.set("16:9 Panorámico")
             self.var_pgxp.set(True)
             self.var_perspective.set(True)
-            self.var_turbo_loads.set(True)
-            messagebox.showinfo("Perfil Aplicado", "Se ha configurado el perfil Moderno 4K 60FPS Widescreen.")
+            messagebox.showinfo("Perfil Aplicado", "Se ha configurado el perfil 16:9 Panorámico.")
         elif "ULTRAWIDE" in preset_name:
             self.var_resolution.set("4K Ultra HD (3840x2160 - 8x SSAA)")
             self.var_aspect.set("21:9 Ultra-Panorámico")
@@ -514,7 +529,7 @@ class FF8ModernLauncher(ctk.CTk):
             messagebox.showinfo("Perfil Aplicado", "Se ha configurado el perfil Ultrawide 21:9.")
         elif "RETRO" in preset_name:
             self.var_resolution.set("1080p Full HD (1920x1080 - 4x)")
-            self.var_aspect.set("4:3 Clásico Original")
+            self.var_aspect.set("4:3 Clásico Original (Sin glitches - Recomendado)")
             messagebox.showinfo("Perfil Aplicado", "Se ha configurado el perfil Retro CRT 4:3.")
 
     # ── TAB 2: MEJORAS (QoL & Cheats) ──
@@ -595,9 +610,9 @@ class FF8ModernLauncher(ctk.CTk):
 
         ctk.CTkLabel(grid, text="Relación de Aspecto:", font=ctk.CTkFont(size=13, weight="bold")).grid(row=1, column=0, sticky="w", pady=8)
         ctk.CTkOptionMenu(grid, variable=self.var_aspect, values=[
+            "4:3 Clásico Original (Sin glitches - Recomendado)",
             "16:9 Panorámico",
-            "21:9 Ultra-Panorámico",
-            "4:3 Clásico Original"
+            "21:9 Ultra-Panorámico"
         ], width=290, fg_color="#1e2d4a", button_color=C_ORANGE).grid(row=1, column=1, padx=20, pady=8)
 
         ctk.CTkLabel(grid, text="Sincronización (V-Sync):", font=ctk.CTkFont(size=13, weight="bold")).grid(row=2, column=0, sticky="w", pady=8)
@@ -722,9 +737,9 @@ class FF8ModernLauncher(ctk.CTk):
             messagebox.showerror("Error", f"No se encontró el ejecutable recompilado:\n{exe}\n\nEn carpeta:\n{work_dir}")
             return
 
-        aspect_val = "16:9"
+        aspect_val = "4:3"
         if "21:9" in self.var_aspect.get(): aspect_val = "21:9"
-        elif "4:3" in self.var_aspect.get(): aspect_val = "4:3"
+        elif "16:9" in self.var_aspect.get(): aspect_val = "16:9"
 
         disc_id = self.var_disc.get()
         disc_path = DISCS_INFO[disc_id - 1]["cue"]
@@ -787,16 +802,10 @@ class FF8ModernLauncher(ctk.CTk):
 
         if "21:9" in self.var_aspect.get():
             env["PSX_ASPECT_RATIO"] = "21:9"
-            env["PSX_WS_FORCE_3D"] = "1"
-            env["PSX_WS_FORCE_2D"] = "0"
-        elif "4:3" in self.var_aspect.get():
-            env["PSX_ASPECT_RATIO"] = "4:3"
-            env["PSX_WS_FORCE_3D"] = "0"
-            env["PSX_WS_FORCE_2D"] = "1"
-        else:
+        elif "16:9" in self.var_aspect.get():
             env["PSX_ASPECT_RATIO"] = "16:9"
-            env["PSX_WS_FORCE_3D"] = "1"
-            env["PSX_WS_FORCE_2D"] = "0"
+        else:
+            env["PSX_ASPECT_RATIO"] = "4:3"
 
         if "4K" in self.var_resolution.get(): env["PSX_INTERNAL_SCALE"] = "8"
         elif "1440p" in self.var_resolution.get(): env["PSX_INTERNAL_SCALE"] = "6"

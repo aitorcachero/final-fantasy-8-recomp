@@ -2,17 +2,14 @@
 cd /d "%~dp0"
 title Final Fantasy VIII Recompiled - 4K 4:3 Original Aspect
 
-:: Optimizaciones de rendimiento nativo en relacion de aspecto 4:3 clasica
-set PSX_RENDER_THREAD=1
-set PSX_PRESENT_THREAD=1
+:: Optimizaciones de rendimiento nativo en relacion de aspecto 4:3 clasica (sin glitches en fondos 2D)
+set PSX_RENDER_THREAD=0
+set PSX_PRESENT_THREAD=0
 set PSX_FRAME_GEN=0
 set PSX_FRAME_INTERPOLATION=0
 set PSX_VSYNC=0
 set PSX_FPS_TELEMETRY=0
 set PSX_FREEZE_HEARTBEAT=0
-set PSX_WS_FORCE_FULLSCREEN=0
-set PSX_WS_FORCE_3D=0
-set PSX_WS_FORCE_2D=1
 set PSX_ASPECT_RATIO=4:3
 set PSX_INTERNAL_SCALE=8
 
