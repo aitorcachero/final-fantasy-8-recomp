@@ -23,6 +23,13 @@ Al igual que en los proyectos que hemos compartido anteriormente, [b]NO SE TRATA
 [*] [b]Perspective-Correct Texturing:[/b]
   Elimina la deformación trapezoidal afín de las texturas de PlayStation al rotar la cámara en el mapamundi o en los escenarios de combate.
 
+[*] [b]Pipeline de Remasterización Nativo (Post-Processing GLSL):[/b]
+  Incorpora un pipeline cinematográfico ejecutado por hardware a través de shaders OpenGL:
+  - [b]Contrast Adaptive Sharpening (CAS):[/b] Enfoque adaptativo inteligente que resalta el detalle de los fondos prerrenderizados (Jardín de Balamb, Dollet, Deling City) sin generar halos.
+  - [b]Resplandor Cinemático HDR (Bloom con máscara Stencil):[/b] Bloom dinámico en hechizos, invocaciones GF y chispas de Gunblade, dejando textos y HUD 2D intactos.
+  - [b]Anti-Aliasing FXAA HQ:[/b] Suavizado de bordes poligonales sin pérdida de nitidez.
+  - [b]Filmic Tonemapping & Vibrance:[/b] Curva S de contraste dinámico y enriquecimiento perceptual de color.
+
 [*] [b]Aspect Ratio Panorámico 16:9 y 21:9 Ultrawide Nativo:[/b]
   Ampliación real del campo de visión (FOV) sin bandas negras forzadas ni estiramiento de geometrías. También se incluye el modo clásico 4:3 con bordes limpios para los puristas que deseen la experiencia de tubo CRT original.
 
