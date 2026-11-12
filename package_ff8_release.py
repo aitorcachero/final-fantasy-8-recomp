@@ -49,7 +49,8 @@ def create_release():
         "JUGAR_FINAL_FANTASY_VIII_4K_43.bat",
         "JUGAR_FINAL_FANTASY_VIII_21_9_ULTRAWIDE.bat",
         "CONFIGURAR_FINAL_FANTASY_VIII.bat",
-        "PREPARAR_DISCO.bat"
+        "PREPARAR_DISCO.bat",
+        "INSTALAR_PACK_TEXTURAS_HD.bat"
     ]
     for b in bat_files:
         src = FF8_DIR / b
@@ -63,6 +64,8 @@ def create_release():
         shutil.copy2(FF8_DIR / "tools" / "setup_disc.py", REL_FOLDER / "tools" / "setup_disc.py")
     if (FF8_DIR / "tools" / "import_ff8_nexus_pack.py").exists():
         shutil.copy2(FF8_DIR / "tools" / "import_ff8_nexus_pack.py", REL_FOLDER / "tools" / "import_ff8_nexus_pack.py")
+    if (FF8_DIR / "tools" / "installer_texture_pack.py").exists():
+        shutil.copy2(FF8_DIR / "tools" / "installer_texture_pack.py", REL_FOLDER / "tools" / "installer_texture_pack.py")
 
     # 4.1 Copiar Mods y estructura de Texturas HD
     mods_src = FF8_DIR / "build-release" / "mods"
