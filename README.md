@@ -1,5 +1,7 @@
 <div align="center">
 
+<a href="https://recomplauncher.com/game/final-fantasy-8-recomp"><picture><source media="(prefers-color-scheme: dark)" srcset="https://recomplauncher.com/assets/press/launcher/badge-light.svg"><img alt="Get it on RecompLauncher" src="https://recomplauncher.com/assets/press/launcher/badge-dark.svg" height="48"></picture></a>
+
 # ⚔️ Final Fantasy VIII Recompiled (PC Port Nativo x64 — Master Edition)
 
 ### *Port nativo para PC (Windows x64) mediante ingeniería inversa y recompilación estática LLVM*
