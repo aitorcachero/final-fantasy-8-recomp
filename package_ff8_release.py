@@ -40,6 +40,7 @@ def create_release():
 
     # 2. Copiar configuracion
     shutil.copy2(FF8_DIR / "game.toml", REL_FOLDER / "game.toml")
+    shutil.copy2(FF8_DIR / "recomplauncher.json", REL_FOLDER / "recomplauncher.json")
     if (FF8_DIR / "settings.toml").exists():
         shutil.copy2(FF8_DIR / "settings.toml", REL_FOLDER / "settings.toml")
 

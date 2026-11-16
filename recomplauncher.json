@@ -1,0 +1,120 @@
+{
+    "$schema": "https://recomplauncher.com/schema/recomplauncher.json",
+    "format": 1,
+    "name": "Final Fantasy VIII Recompiled",
+    "repo": "aitorcachero/final-fantasy-8-recomp",
+    "inputs": [
+        {
+            "id": "disc1",
+            "label": "Final Fantasy VIII (Spain), disc 1 of 4: its .cue sheet or .chd file",
+            "role": "disc",
+            "formats": [
+                {
+                    "type": "file",
+                    "extensions": [
+                        "cue",
+                        "chd"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "disc2",
+            "label": "Final Fantasy VIII (Spain), disc 2 of 4: its .cue sheet or .chd file",
+            "role": "disc",
+            "optional": true,
+            "formats": [
+                {
+                    "type": "file",
+                    "extensions": [
+                        "cue",
+                        "chd"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "disc3",
+            "label": "Final Fantasy VIII (Spain), disc 3 of 4: its .cue sheet or .chd file",
+            "role": "disc",
+            "optional": true,
+            "formats": [
+                {
+                    "type": "file",
+                    "extensions": [
+                        "cue",
+                        "chd"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "disc4",
+            "label": "Final Fantasy VIII (Spain), disc 4 of 4: its .cue sheet or .chd file",
+            "role": "disc",
+            "optional": true,
+            "formats": [
+                {
+                    "type": "file",
+                    "extensions": [
+                        "cue",
+                        "chd"
+                    ]
+                }
+            ]
+        }
+    ],
+    "prepare": {
+        "program": [
+            "py"
+        ],
+        "args": [
+            "-3",
+            "{install}/tools/setup_disc.py",
+            "--prepare",
+            "--game={input:disc1}",
+            "--disc2={input:disc2}",
+            "--disc3={input:disc3}",
+            "--disc4={input:disc4}"
+        ],
+        "label": "Your discs, ready in the disc folder",
+        "timeout": 900
+    },
+    "start": {
+        "program": [
+            "Final_Fantasy_VIII_Recompiled.exe"
+        ],
+        "args": [
+            "--no-launcher"
+        ]
+    },
+    "saves": [
+        "{install}/saves"
+    ],
+    "folders": {
+        "saves": [
+            {
+                "path": "{install}/saves"
+            }
+        ],
+        "disc": [
+            {
+                "path": "{install}/disc"
+            }
+        ]
+    },
+    "actions": [
+        {
+            "id": "disc",
+            "label": "Disc folder",
+            "help": "Your disc images for Final Fantasy VIII (.cue and .bin, or .chd), discs 1 to 4.",
+            "open": "disc"
+        },
+        {
+            "id": "saves",
+            "label": "Saves",
+            "help": "Your save files.",
+            "open": "saves"
+        }
+    ]
+}
